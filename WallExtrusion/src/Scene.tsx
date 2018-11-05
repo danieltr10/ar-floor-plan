@@ -13,6 +13,8 @@ class Scene extends React.Component {
     cube: THREE.Mesh
     edges: THREE.LineSegments
     frameId: number
+    wallHeigth: number = 1
+    wallWidth: number = .1
 
     constructor(props) {
         super(props)
@@ -34,29 +36,35 @@ class Scene extends React.Component {
         return matrix
     }
 
-    addOffsets<T, U>(
-            f: (...args: T[]) => any, 
-            offsetApplier: (originalArg: T, offset: U) => T, 
-            ...offsets: U[]
-        ): (...args: T[]) => any {
-        return (...originalArgs) => {
-            const newArgs = originalArgs.map((arg, i) =>  offsetApplier(arg, offsets[i]))
-            return f(...newArgs)
-        }
+    distanceBetweenPoints(a: Point, b: Point): number {
+        const [[x1, y1], [x2, y2]] = [a, b];
+        return Math.sqrt((x2-x1)**2 + (y2-y1)**2)
     }
 
-    createGeometryFromPoints(pointsArray: Line[]) {
-        const height = 1
-        const wall1 = new THREE.BoxGeometry(1, height, .1)
-        const wall2 = new THREE.BoxGeometry(1, height, .1).rotateY(-Math.PI/4)
+    angleFromXAxis(line: Line): number {
+        const [[x1, y1], [x2, y2]] = line
+        return Math.atan((y2-y1)/(x2-x1))
+    }
 
-        const plant = new THREE.Geometry()
+    getLineMidPoint(line: Line): Point {
+        const [[x1, y1], [x2, y2]] = line
+        return [(x1 + x2)/2, (y1 + y2)/2]
+    }
 
-        plant.merge(wall1, this.createTranslationMatrix(0, 0, 0))
+    createGeometryFromPoints(pointsArray: Line[], scaling = .25, plant = new THREE.Geometry) {
+        if (pointsArray.length <= 0) {
+            return plant;
+        } else {
+            const [firstLine, ...rest] = pointsArray
+            const d = this.distanceBetweenPoints(...firstLine)
+            const angle = this.angleFromXAxis(firstLine) 
+            const wall2 = new THREE.BoxGeometry(d*scaling, this.wallWidth*scaling, this.wallHeigth*scaling).rotateZ(angle)
+            
+            const [x, y] = this.getLineMidPoint(firstLine)
+            plant.merge(wall2, this.createTranslationMatrix(x*scaling, y*scaling, 0))
 
-        plant.merge(wall2, this.createTranslationMatrix(.9, 0, .4))
-
-        return plant
+            return this.createGeometryFromPoints(rest, scaling, plant)
+        }
     }
 
     componentDidMount() {
@@ -71,7 +79,14 @@ class Scene extends React.Component {
             2000
         )
         const renderer = new THREE.WebGLRenderer({ antialias: true })
-        const geometry = this.createGeometryFromPoints([[[0,0], [0,1]]])
+        const geometry = this.createGeometryFromPoints([
+            [[0, 0], [0, 1]], 
+            [[0, 2], [0, 3]],
+            [[0, 3], [4, 5]],
+            [[4, 5], [4, 2]],
+            [[4, 1], [4, 0]],
+            [[4, 0], [0, 0]],
+        ])
         const material = new THREE.MeshBasicMaterial({ color: 0xff00ff })
         const cube = new THREE.Mesh(geometry, material)
 
