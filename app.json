@@ -22,10 +22,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "br.poli.ar"
+      "bundleIdentifier": "br.poli.interativo"
     },
     "android": {
-      "bundleIdentifier": "br.poli.ar"
+      "package": "br.poli.interativo"
     }
   }
 }
