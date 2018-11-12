@@ -7,6 +7,8 @@ import json
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = './upload'
 
+app.run(host= '0.0.0.0')
+
 @app.route("/upload", methods=['POST'])
 def upload_file():
 	file = request.files['image']
