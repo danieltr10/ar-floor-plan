@@ -6,6 +6,7 @@
       "coverage/lcov-report/*.js"
     ]
   },
+  "defaultSeverity": "warning",
   "rules": {
     "member-access": false,
     "variable-name": [
