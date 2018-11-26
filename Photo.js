@@ -150,10 +150,7 @@ export default class CameraScreen extends React.Component {
     message
   }) => console.error(message);
 
-  uploadImageAsync = async (uri) => {
-    console.log(uri);
-    const data = await FileSystem.getInfoAsync(uri)
-    console.log(data);
+  uploadImageAsync = (uri) => {
     let apiUrl = 'https://ar-floor.herokuapp.com/upload';
 
     let uriParts = uri.split('.');
@@ -182,7 +179,10 @@ export default class CameraScreen extends React.Component {
     this.setState({
       newPhotos: true
     });
-    this.uploadImageAsync(photo.uri).then(response => console.log(response)).catch(er => console.log(er))
+    this.uploadImageAsync(photo.uri)
+      .then(response => response.json())
+      .then(data => this.props.onReceiveArrayData(data.lines_coord))
+      .catch(er => console.log(er))
 
   }
 

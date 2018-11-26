@@ -160,7 +160,8 @@ export default class ARCamera extends React.Component {
 		this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
 
 		// Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
-		const geometry = this.createGeometryFromPoints(wallMatrixExample)
+    console.log(this.props.arrayData);
+		const geometry = this.createGeometryFromPoints(this.props.arrayData)
 				.rotateX(-Math.PI/2)
 				.rotateX(Math.PI)
 		// Simple color material

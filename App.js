@@ -7,16 +7,23 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props);
 
-	}
+		this.state = {
+			plantArrayData: null
+		}
 
-	componentDidMount() {
+		this.handleArrayDataReceived = this.handleArrayDataReceived.bind(this)
+	}
+	handleArrayDataReceived(arrayData) {
+		console.log(arrayData.length);
+		this.setState({plantArrayData: arrayData})
 	}
 
 	render() {
 		return (
-			// <ARCamera />
+			this.state.plantArrayData &&
+				<ARCamera arrayData={this.state.plantArrayData} /> ||
 			<View style={{ flex: 1 }}>
-				<Photo />
+				<Photo onReceiveArrayData={this.handleArrayDataReceived}/>
 			</View>
 		);
 	}
