@@ -13,7 +13,8 @@ import {
   View,
   TouchableOpacity,
   Slider,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native';
 import GalleryScreen from './GalleryScreen';
 import isIPhoneX from 'react-native-is-iphonex';
@@ -78,6 +79,7 @@ export default class CameraScreen extends React.Component {
     pictureSizes: [],
     pictureSizeId: 0,
     showMoreOptions: false,
+    isLoading: false
   };
 
   async componentWillMount() {
@@ -151,6 +153,7 @@ export default class CameraScreen extends React.Component {
   }) => console.error(message);
 
   uploadImageAsync = (uri) => {
+    this.setState({isLoading: true})
     let apiUrl = 'https://ar-floor.herokuapp.com/upload';
 
     let uriParts = uri.split('.');
@@ -181,7 +184,10 @@ export default class CameraScreen extends React.Component {
     });
     this.uploadImageAsync(photo.uri)
       .then(response => response.json())
-      .then(data => this.props.onReceiveArrayData(data.lines_coord))
+      .then(data => {
+        this.setState({isLoading: false})
+        this.props.onReceiveArrayData(data.lines_coord)
+      })
       .catch(er => console.log(er))
 
   }
@@ -371,6 +377,7 @@ export default class CameraScreen extends React.Component {
     /Text> < /
   View >
 
+    renderLoading = () => this.state.isLoading && <ActivityIndicator size="large" color="#ffffff" />
     renderTopBar = () =>
     <
     View
@@ -630,11 +637,15 @@ export default class CameraScreen extends React.Component {
       }
       onBarCodeScanned = {
         this.state.barcodeScanning ? this.onBarCodeScanned : undefined
-      } > {
+      } >
+      {
         this.renderTopBar()
-      } {
-        this.renderBottomBar()
-      } <
+      }
+      {
+        !this.state.isLoading && this.renderBottomBar()
+      }
+      {this.renderLoading()}
+      <
       /Camera> {
       this.state.faceDetecting && this.renderFaces()
     } {

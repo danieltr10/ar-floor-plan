@@ -2,41 +2,11 @@ import React from 'react';
 import { AR, Asset } from 'expo';
 // Let's alias ExpoTHREE.AR as ThreeAR so it doesn't collide with Expo.AR.
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
-import { View, Slider } from 'react-native';
+import { View, Slider, Button } from 'react-native';
 // Let's also import `expo-graphics`
 // expo-graphics manages the setup/teardown of the gl context/ar session, creates a frame-loop, and observes size/orientation changes.
 // it also provides debug information with `isArCameraStateEnabled`
 import { View as GraphicsView } from 'expo-graphics';
-
-const wallMatrixExample = [
-    [[313, 124],[521, 124]],
-    [[356, 370],[421, 370]],
-    [[93, 119],[227, 119]],
-    [[269, 253],[348, 253]],
-    [[385, 120],[521, 120]],
-    [[208, 212],[285, 213]],
-    [[516, 334],[516, 219]],
-    [[93, 161],[93, 123]],
-    [[211, 370],[297, 370]],
-    [[270, 366],[270, 255]],
-    [[382, 373],[382, 251]],
-    [[521, 300],[521, 217]],
-    [[479, 372],[520, 373]],
-    [[207, 210],[207, 126]],
-    [[366, 213],[421, 213]],
-    [[370, 215],[370, 119]],
-    [[319, 215],[319, 119]],
-    [[450, 254],[512, 254]],
-    [[92, 371],[93, 311]],
-    [[516, 125],[517, 159]],
-    [[520, 372],[520, 301]],
-    [[99, 123],[211, 125]],
-    [[419, 179],[419, 127]],
-    [[95, 279],[95, 219]],
-    [[91, 223],[91, 249]],
-    [[100, 369],[153, 370]],
-    [[313, 120],[384, 119]]
-]
 
 export default class ARCamera extends React.Component {
 	constructor(props) {
@@ -115,14 +85,23 @@ export default class ARCamera extends React.Component {
 					isArCameraStateEnabled
 					arTrackingConfiguration={AR.TrackingConfigurations.World}
 				/>
-				<Slider
-					step={0.1}
-					maximumValue={2}
-					onValueChange={value => {
-						this.currentScale = value;
-					}}
-					value={this.currentScale}
-				/>
+        <View style={{flex: 0.2}}>
+          <Slider
+  					step={0.1}
+  					maximumValue={2}
+  					onValueChange={value => {
+  						this.currentScale = value;
+  					}}
+  					value={this.currentScale}
+  				/>
+          <Button
+            onPress={this.props.onBackPress}
+            title="Voltar"
+            color="#000000"
+            accessibilityLabel="Voltar"
+          />
+        </View>
+
 			</View>
 		);
 	}
