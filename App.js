@@ -14,10 +14,10 @@ export default class App extends React.Component {
 
 	render() {
 		return (
-			<ARCamera />
-			// <View style={{ flex: 1 }}>
-			// 	<Photo />
-			// </View>
+			// <ARCamera />
+			<View style={{ flex: 1 }}>
+				<Photo />
+			</View>
 		);
 	}
 }
