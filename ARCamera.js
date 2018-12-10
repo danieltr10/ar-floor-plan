@@ -88,7 +88,7 @@ export default class ARCamera extends React.Component {
         <View style={{flex: 0.2}}>
           <Slider
   					step={0.1}
-  					maximumValue={2}
+  					maximumValue={10}
   					onValueChange={value => {
   						this.currentScale = value;
   					}}
@@ -113,10 +113,10 @@ export default class ARCamera extends React.Component {
 
 		const listener = AR.onFrameDidUpdate(() => {
 			if (this.previousScale !== this.currentScale) {
-				this.cube.scale.y = this.currentScale;
+				this.walls.scale.y = this.currentScale;
         const delta = this.currentScale - this.previousScale
         if (this.previousScale !== 1) {
-          this.cube.translateY((delta / 35));
+          this.walls.translateY((delta / 35));
         }
 				this.previousScale = this.currentScale;
 			}
@@ -138,7 +138,7 @@ export default class ARCamera extends React.Component {
 		// Ex: When we look down this camera will rotate to look down too!
 		this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
 
-		// Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
+		// Make a walls - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
     console.log(this.props.arrayData);
 		const geometry = this.createGeometryFromPoints(this.props.arrayData)
 				.rotateX(-Math.PI/2)
@@ -151,18 +151,22 @@ export default class ARCamera extends React.Component {
 		});
 
 		// Combine our geometry and material
-		this.cube = new THREE.Mesh(geometry, material);
-		// Place the box 0.4 meters in front of us.
-		this.cube.position.z = -0.4;
+		this.walls = new THREE.Mesh(geometry, material);
 
-		// Add the cube to the scene
-		this.scene.add(this.cube);
+		this.walls.position.z = -3.5;
+		this.walls.position.x = -1.8;
+		this.walls.position.y = -1.5;
 
-		// Setup a light so we can see the cube color
+
+
+		// Add the walls to the scene
+		this.scene.add(this.walls);
+
+		// Setup a light so we can see the walls color
 		// AmbientLight colors all things in the scene equally.
 		this.scene.add(new THREE.DirectionalLight( 0xffffff, 0.5));
 
-		this.cube.scale = 0;
+		this.walls.scale = 0;
 
 	};
 
